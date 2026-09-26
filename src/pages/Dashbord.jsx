@@ -1,5 +1,15 @@
-import { Link } from "react-router-dom";
-import { Card, Row, Col, Statistic, Button, Empty, Tag, Alert } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Button,
+  Empty,
+  Tag,
+  Alert,
+  Table,
+} from "antd";
 import {
   ArrowLeftOutlined,
   HeartFilled,
@@ -7,6 +17,7 @@ import {
   VideoCameraOutlined,
   StarFilled,
   BarChartOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import {
   BarChart,
@@ -27,6 +38,8 @@ import "./Dashbord.css";
 const FARBY = ["#667eea", "#764ba2", "#ff6b81", "#f6b93b", "#2ed573", "#54a0ff"];
 
 function Dashbord({ laiky, vihtuky, naLajk }) {
+  const navigate = useNavigate();
+
   // Дані для графіка лайків — міняється разом з laiky
   const daniLajkiv = filmy.map((f) => ({
     nazva: f.nazva,
@@ -38,6 +51,7 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
   filmy.forEach((f) => {
     zhanryMap[f.zhanr] = (zhanryMap[f.zhanr] || 0) + 1;
   });
+  const zhanryData = Object.keys(zhanryMap);
   const daniZhanriv = Object.entries(zhanryMap).map(([nazva, kilkist]) => ({
     nazva,
     kilkist,
@@ -54,6 +68,63 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
   const serednyaOcinka = vihtuky.length
     ? (vihtuky.reduce((s, v) => s + v.ocinka, 0) / vihtuky.length).toFixed(1)
     : 0;
+
+  // Таблиця фільмів
+  const kolonky = [
+    {
+      title: "",
+      dataIndex: "obraz",
+      key: "obraz",
+      width: 60,
+      render: (obraz) => <span className="tablycia-obraz">{obraz}</span>,
+    },
+    {
+      title: "Назва",
+      dataIndex: "nazva",
+      key: "nazva",
+      sorter: (a, b) => a.nazva.localeCompare(b.nazva, "uk"),
+    },
+    {
+      title: "Жанр",
+      dataIndex: "zhanr",
+      key: "zhanr",
+      filters: zhanryData.map((z) => ({ text: z, value: z })),
+      onFilter: (value, record) => record.zhanr === value,
+      render: (zhanr) => <Tag color="geekblue">{zhanr}</Tag>,
+    },
+    {
+      title: "Лайки",
+      key: "laiky",
+      width: 100,
+      sorter: (a, b) => a.laiky - b.laiky,
+      defaultSortOrder: "descend",
+      render: (_, record) => (
+        <span className="tablycia-lajky">
+          <HeartFilled style={{ color: "#ff6b81" }} /> {record.laiky}
+        </span>
+      ),
+    },
+    {
+      title: "",
+      key: "diya",
+      width: 110,
+      render: (_, record) => (
+        <Button
+          type="primary"
+          size="small"
+          icon={<EyeOutlined />}
+          onClick={() => navigate(`/film/${record.id}`)}
+        >
+          Деталі
+        </Button>
+      ),
+    },
+  ];
+
+  const daniTablyci = filmy.map((f) => ({
+    ...f,
+    laiky: laiky[f.id] || 0,
+  }));
 
   return (
     <div className="dashbord">
@@ -112,6 +183,28 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
           </Card>
         </Col>
       </Row>
+
+      {/* Перелік фільмів */}
+      <Card
+        className="grafik-kartka"
+        title={
+          <>
+            <VideoCameraOutlined style={{ color: "#667eea" }} /> Усі фільми (
+            {filmy.length}) — можна сортувати та фільтрувати
+          </>
+        }
+      >
+        <Table
+          columns={kolonky}
+          dataSource={daniTablyci}
+          rowKey="id"
+          pagination={false}
+          onRow={(record) => ({
+            onClick: () => navigate(`/film/${record.id}`),
+            style: { cursor: "pointer" },
+          })}
+        />
+      </Card>
 
       {/* Графік 1 — лайки за фільмами */}
       <Card

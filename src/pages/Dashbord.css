@@ -51,6 +51,19 @@
   margin-bottom: 16px;
 }
 
+.tablycia-obraz {
+  font-size: 24px;
+}
+
+.tablycia-lajky {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.dashbord .ant-table-row:hover {
+  background-color: #f0f4ff;
+}
+
 @media (max-width: 600px) {
   .dashbord-shapka h1 {
     font-size: 26px;
