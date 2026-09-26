@@ -76,3 +76,14 @@
   font-size: 15px;
   line-height: 1.6;
 }
+
+/* 📱 Мобільна версія */
+@media (max-width: 600px) {
+  .notatky {
+    padding: 18px;
+  }
+
+  .notatky-shapka {
+    flex-wrap: wrap;
+  }
+}

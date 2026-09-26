@@ -70,7 +70,7 @@ function Podrobnosti({ filmy, vydalutyFilm }) {
 
           {/* Деталі */}
           <Descriptions
-            column={2}
+            column={{ xs: 1, sm: 2 }}
             bordered
             size="small"
             className="detali-tablycia"

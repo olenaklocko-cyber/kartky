@@ -13,3 +13,8 @@ body {
 a {
   text-decoration: none;
 }
+
+/* 📱 Модалки не мають виходити за екран телефона */
+.ant-modal {
+  max-width: calc(100vw - 24px);
+}

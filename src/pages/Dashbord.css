@@ -192,3 +192,46 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 4px;
 }
+
+/* 📱 Мобільна версія */
+@media (max-width: 600px) {
+  .dashbord {
+    padding: 20px 12px;
+  }
+
+  .dashbord-shapka {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .stat-pidkazka {
+    font-size: 11px;
+  }
+
+  .rejtyng-nazva {
+    width: 84px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rejtyng-misto {
+    width: 26px;
+    font-size: 13px;
+  }
+
+  .rejtyng-chyslo {
+    width: 40px;
+    font-size: 13px;
+  }
+
+  .serednya-velyka {
+    font-size: 40px;
+  }
+
+  .knopky-lajkiv .ant-btn {
+    font-size: 12px;
+  }
+}

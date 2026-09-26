@@ -103,3 +103,38 @@
     font-size: 100px;
   }
 }
+
+@media (max-width: 600px) {
+  .podrobnosti {
+    padding: 20px 14px;
+  }
+
+  .zobrazhennya-filmu {
+    padding: 24px;
+  }
+
+  .poster-filmu {
+    max-width: 260px;
+  }
+
+  .info-filmu {
+    padding: 20px;
+  }
+
+  .info-filmu h1 {
+    font-size: 26px;
+  }
+
+  .opys {
+    font-size: 15px;
+  }
+
+  .sekciya-pro-film {
+    padding: 20px;
+  }
+
+  .diyi .ant-btn {
+    flex: 1;
+    min-width: 140px;
+  }
+}

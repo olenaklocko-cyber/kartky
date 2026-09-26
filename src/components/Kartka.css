@@ -32,3 +32,11 @@
   font-size: 14px;
   line-height: 1.6;
 }
+
+/* 📱 Мобільна версія */
+@media (max-width: 600px) {
+  .kartka-obraz {
+    height: 300px;
+    padding: 0;
+  }
+}

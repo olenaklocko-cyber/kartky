@@ -210,3 +210,49 @@
     flex-direction: column;
   }
 }
+
+/* 📱 Мобільна версія */
+@media (max-width: 600px) {
+  .golovna {
+    padding: 20px 14px;
+  }
+
+  .zaholovok h1 {
+    font-size: 24px;
+  }
+
+  .zaholovok p {
+    font-size: 15px;
+  }
+
+  .zaholovok-verh {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .zaholovok-verh .ant-space {
+    justify-content: center;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .zagolovok-sekciyi {
+    font-size: 22px;
+  }
+
+  .internet-poshuk {
+    padding: 14px;
+  }
+
+  .internet-poster,
+  .internet-poster-nema {
+    height: 220px;
+  }
+
+  .internet-rezultaty {
+    grid-template-columns: 1fr;
+  }
+}

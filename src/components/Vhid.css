@@ -75,3 +75,14 @@
   font-size: 15px;
   margin-bottom: 8px;
 }
+
+/* 📱 Мобільна версія */
+@media (max-width: 600px) {
+  .vhid-kartka {
+    padding: 26px 18px;
+  }
+
+  .vhid-zagolovok h1 {
+    font-size: 24px;
+  }
+}
