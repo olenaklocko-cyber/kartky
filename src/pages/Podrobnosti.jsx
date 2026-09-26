@@ -1,16 +1,16 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Tag, Descriptions, Result } from "antd";
+import { Button, Tag, Descriptions, Result, Popconfirm, message } from "antd";
 import {
   ArrowLeftOutlined,
   PlayCircleOutlined,
   HeartOutlined,
   ShareAltOutlined,
   VideoCameraOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
-import filmy from "../data/filmy";
 import "./Podrobnosti.css";
 
-function Podrobnosti() {
+function Podrobnosti({ filmy, vydalutyFilm }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const film = filmy.find((f) => f.id === Number(id));
@@ -116,6 +116,21 @@ function Podrobnosti() {
             <Button size="large" icon={<ShareAltOutlined />}>
               Поділитись
             </Button>
+            <Popconfirm
+              title="Видалити фільм з каталогу?"
+              description={`«${film.nazva}» зникне зі списку`}
+              okText="Так, видалити"
+              cancelText="Ні"
+              onConfirm={() => {
+                vydalutyFilm(film.id);
+                message.success(`«${film.nazva}» видалено`);
+                navigate("/");
+              }}
+            >
+              <Button size="large" danger icon={<DeleteOutlined />}>
+                Видалити
+              </Button>
+            </Popconfirm>
           </div>
         </div>
       </div>

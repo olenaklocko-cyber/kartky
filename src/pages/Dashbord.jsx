@@ -13,6 +13,8 @@ import {
   List,
   Avatar,
   Rate,
+  Input,
+  Popconfirm,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -22,6 +24,8 @@ import {
   StarFilled,
   BarChartOutlined,
   RightOutlined,
+  SearchOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import {
   BarChart,
@@ -36,15 +40,16 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
-import filmy from "../data/filmy";
 import "./Dashbord.css";
 
 const FARBY = ["#667eea", "#764ba2", "#ff6b81", "#f6b93b", "#2ed573", "#54a0ff"];
 
-function Dashbord({ laiky, vihtuky, naLajk }) {
+function Dashbord({ filmy, vydalutyFilm, laiky, vihtuky, naLajk }) {
   const navigate = useNavigate();
   // Яка картка статистики відкрита: null | filmy | laiky | vihtuky | ocinka
   const [vidkryty, setVidkryty] = useState(null);
+  // Пошук усередині модалки «Фільмів»
+  const [poshukUModaltsi, setPoshukUModaltsi] = useState("");
 
   // Дані для графіка лайків — міняється разом з laiky
   const daniLajkiv = filmy.map((f) => ({
@@ -91,36 +96,77 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
   // Вміст модалок
   const vmistModalky = () => {
     if (vidkryty === "filmy") {
+      const filtrivani = filmy.filter((f) =>
+        f.nazva.toLowerCase().includes(poshukUModaltsi.toLowerCase())
+      );
       return (
-        <List
-          dataSource={filmy}
-          renderItem={(f) => (
-            <List.Item
-              className="spysok-ryadok"
-              onClick={() => {
-                setVidkryty(null);
-                navigate(`/film/${f.id}`);
-              }}
-            >
-              <List.Item.Meta
-                avatar={
-                  <img className="spysok-poster" src={f.poster} alt="" />
-                }
-                title={f.nazva}
-                description={
-                  <>
-                    <Tag color="geekblue">{f.zhanr}</Tag>{" "}
-                    <span className="spysok-laiky">
-                      <HeartFilled style={{ color: "#ff6b81" }} />{" "}
-                      {laiky[f.id] || 0}
-                    </span>
-                  </>
-                }
-              />
-              <RightOutlined style={{ color: "#bbb" }} />
-            </List.Item>
+        <>
+          <Input
+            className="poshuk-modalta"
+            prefix={<SearchOutlined />}
+            allowClear
+            placeholder="Пошук за назвою..."
+            value={poshukUModaltsi}
+            onChange={(e) => setPoshukUModaltsi(e.target.value)}
+            style={{ marginBottom: 16 }}
+          />
+          {filtrivani.length === 0 ? (
+            <Empty description="Нічого не знайдено" />
+          ) : (
+            <List
+              dataSource={filtrivani}
+              renderItem={(f) => (
+                <List.Item
+                  className="spysok-ryadok"
+                  onClick={() => {
+                    setVidkryty(null);
+                    navigate(`/film/${f.id}`);
+                  }}
+                  actions={[
+                    <Popconfirm
+                      key="vydaluty"
+                      title="Видалити фільм?"
+                      okText="Так"
+                      cancelText="Ні"
+                      onConfirm={(e) => {
+                        e.stopPropagation();
+                        vydalutyFilm(f.id);
+                      }}
+                    >
+                      <Button
+                        type="text"
+                        danger
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </Popconfirm>,
+                  ]}
+                >
+                  <List.Item.Meta
+                    avatar={
+                      f.poster ? (
+                        <img className="spysok-poster" src={f.poster} alt="" />
+                      ) : (
+                        <span className="spysok-obraz">🎬</span>
+                      )
+                    }
+                    title={f.nazva}
+                    description={
+                      <>
+                        <Tag color="geekblue">{f.zhanr}</Tag>{" "}
+                        <span className="spysok-laiky">
+                          <HeartFilled style={{ color: "#ff6b81" }} />{" "}
+                          {laiky[f.id] || 0}
+                        </span>
+                      </>
+                    }
+                  />
+                </List.Item>
+              )}
+            />
           )}
-        />
+        </>
       );
     }
 

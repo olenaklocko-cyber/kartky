@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Button, Space } from "antd";
+import { Input, Button, Space, Modal, message } from "antd";
 import {
   SearchOutlined,
   BarChartOutlined,
   MessageFilled,
+  PlusOutlined,
 } from "@ant-design/icons";
 import supabase from "../supabase";
 import Kartka from "../components/Kartka";
@@ -12,15 +13,32 @@ import FormaVihtuku from "../components/FormaVihtuku";
 import Vihtuk from "../components/Vihtuk";
 import Notatky from "../components/Notatky";
 import Vhid from "../components/Vhid";
-import filmy from "../data/filmy";
+import { poshuk as zbuduvatyPoshuk } from "../data/filmy";
 import "./Golovna.css";
 
-function Golovna({ laiky, vihtuky, naLajk, dodatyVihtuk }) {
+const { TextArea } = Input;
+
+function Golovna({
+  filmy,
+  dodatyFilm,
+  laiky,
+  vihtuky,
+  naLajk,
+  dodatyVihtuk,
+}) {
   const [korystuvach, setKorystuvach] = useState(null);
   const [zavantazhennya, setZavantazhennya] = useState(true);
 
   const [poshuk, setPoshuk] = useState("");
   const [aktyvnyjZhanr, setAktyvnyjZhanr] = useState("Усі");
+
+  // Модалка додавання фільму
+  const [modalka, setModalka] = useState(false);
+  const [novaNazva, setNovaNazva] = useState("");
+  const [novyyZhanr, setNovyyZhanr] = useState("");
+  const [novyyOpys, setNovyyOpys] = useState("");
+  const [novyyPoster, setNovyyPoster] = useState("");
+  const [novyyVideo, setNovyyVideo] = useState("");
 
   const navigate = useNavigate();
 
@@ -56,6 +74,37 @@ function Golovna({ laiky, vihtuky, naLajk, dodatyVihtuk }) {
     return spodobaetsya && zhannyj;
   });
 
+  // Закриття модалки та очищення форми
+  const zakrytyModalku = () => {
+    setModalka(false);
+    setNovaNazva("");
+    setNovyyZhanr("");
+    setNovyyOpys("");
+    setNovyyPoster("");
+    setNovyyVideo("");
+  };
+
+  // Додавання нового фільму
+  const pidtyktyDodyaty = () => {
+    const nazva = novaNazva.trim();
+    if (!nazva) {
+      message.warning("Вкажіть назву фільму");
+      return;
+    }
+    dodatyFilm({
+      id: Date.now(),
+      obraz: "🎬",
+      nazva,
+      opys: novyyOpys.trim() || "Опис поки що відсутній.",
+      zhanr: novyyZhanr.trim() || "Інше",
+      poster: novyyPoster.trim(),
+      youtube: novyyVideo.trim() || zbuduvatyPoshuk(nazva),
+      dyvytysya: zbuduvatyPoshuk(nazva),
+    });
+    message.success(`Фільм «${nazva}» додано до каталогу!`);
+    zakrytyModalku();
+  };
+
   if (zavantazhennya) {
     return (
       <div className="zavantazhennya-sejchas">
@@ -78,14 +127,23 @@ function Golovna({ laiky, vihtuky, naLajk, dodatyVihtuk }) {
             <h1>🎬 Мій каталог фільмів</h1>
             <p>Клікни на картку щоб побачити деталі фільму</p>
           </div>
-          <Button
-            type="primary"
-            size="large"
-            icon={<BarChartOutlined />}
-            onClick={() => navigate("/dashbord")}
-          >
-            Дашборд
-          </Button>
+          <Space wrap>
+            <Button
+              icon={<PlusOutlined />}
+              size="large"
+              onClick={() => setModalka(true)}
+            >
+              Додати фільм
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              icon={<BarChartOutlined />}
+              onClick={() => navigate("/dashbord")}
+            >
+              Дашборд
+            </Button>
+          </Space>
         </div>
       </header>
 
@@ -172,6 +230,60 @@ function Golovna({ laiky, vihtuky, naLajk, dodatyVihtuk }) {
 
       {/* Нотатки — тільки для авторизованих */}
       <Notatky korystuvach={korystuvach} naVykhid={naVykhid} />
+
+      {/* Модалка додавання фільму */}
+      <Modal
+        title="➕ Додати фільм до каталогу"
+        open={modalka}
+        onOk={pidtyktyDodyaty}
+        onCancel={zakrytyModalku}
+        okText="Додати"
+        cancelText="Скасувати"
+      >
+        <div className="forma-filmu">
+          <label>
+            Назва фільму *
+            <Input
+              placeholder="Наприклад: Матриця"
+              value={novaNazva}
+              onChange={(e) => setNovaNazva(e.target.value)}
+            />
+          </label>
+          <label>
+            Жанр
+            <Input
+              placeholder="Наприклад: Фантастика"
+              value={novyyZhanr}
+              onChange={(e) => setNovyyZhanr(e.target.value)}
+            />
+          </label>
+          <label>
+            Опис
+            <TextArea
+              rows={3}
+              placeholder="Коротко про фільм..."
+              value={novyyOpys}
+              onChange={(e) => setNovyyOpys(e.target.value)}
+            />
+          </label>
+          <label>
+            Посилання на постер (необов'язково)
+            <Input
+              placeholder="https://... (якщо порожньо — буде емодзі 🎬)"
+              value={novyyPoster}
+              onChange={(e) => setNovyyPoster(e.target.value)}
+            />
+          </label>
+          <label>
+            Посилання на відео (необов'язково)
+            <Input
+              placeholder="YouTube-посилання (якщо порожньо — автоматичний пошук)"
+              value={novyyVideo}
+              onChange={(e) => setNovyyVideo(e.target.value)}
+            />
+          </label>
+        </div>
+      </Modal>
     </div>
   );
 }

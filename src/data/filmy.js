@@ -1,5 +1,5 @@
 // Посилання на пошук фільму для онлайн-перегляду на YouTube
-const poshuk = (nazva) =>
+export const poshuk = (nazva) =>
   `https://www.youtube.com/results?search_query=${encodeURIComponent(
     `${nazva} дивитися онлайн`
   )}`;

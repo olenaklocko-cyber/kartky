@@ -134,3 +134,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Форма додавання фільму */
+.forma-filmu {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.forma-filmu label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
