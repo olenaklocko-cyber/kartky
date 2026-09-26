@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
@@ -9,6 +10,10 @@ import {
   Tag,
   Alert,
   Table,
+  Modal,
+  List,
+  Avatar,
+  Rate,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -18,6 +23,7 @@ import {
   StarFilled,
   BarChartOutlined,
   PlayCircleOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import {
   BarChart,
@@ -39,6 +45,8 @@ const FARBY = ["#667eea", "#764ba2", "#ff6b81", "#f6b93b", "#2ed573", "#54a0ff"]
 
 function Dashbord({ laiky, vihtuky, naLajk }) {
   const navigate = useNavigate();
+  // Яка картка статистики відкрита: null | filmy | laiky | vihtuky | ocinka
+  const [vidkryty, setVidkryty] = useState(null);
 
   // Дані для графіка лайків — міняється разом з laiky
   const daniLajkiv = filmy.map((f) => ({
@@ -68,6 +76,161 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
   const serednyaOcinka = vihtuky.length
     ? (vihtuky.reduce((s, v) => s + v.ocinka, 0) / vihtuky.length).toFixed(1)
     : 0;
+
+  // Дані для модалок
+  const filmyPosortovani = [...filmy]
+    .map((f) => ({ ...f, kilkistLaikiv: laiky[f.id] || 0 }))
+    .sort((a, b) => b.kilkistLaikiv - a.kilkistLaikiv);
+  const maksLaikiv = Math.max(...filmyPosortovani.map((f) => f.kilkistLaikiv), 1);
+
+  // Заголовки модалок
+  const zagolovky = {
+    filmy: `🎬 Усі фільми (${filmy.length})`,
+    laiky: `❤️ Рейтинг лайків — хто лідер?`,
+    vihtuky: `💬 Відгуки (${vihtuky.length})`,
+    ocinka: `⭐ Середня оцінка ${serednyaOcinka} / 5`,
+  };
+
+  // Вміст модалок
+  const vmistModalky = () => {
+    if (vidkryty === "filmy") {
+      return (
+        <List
+          dataSource={filmy}
+          renderItem={(f) => (
+            <List.Item
+              className="spysok-ryadok"
+              onClick={() => {
+                setVidkryty(null);
+                navigate(`/film/${f.id}`);
+              }}
+            >
+              <List.Item.Meta
+                avatar={
+                  <img className="spysok-poster" src={f.poster} alt="" />
+                }
+                title={f.nazva}
+                description={
+                  <>
+                    <Tag color="geekblue">{f.zhanr}</Tag>{" "}
+                    <span className="spysok-laiky">
+                      <HeartFilled style={{ color: "#ff6b81" }} />{" "}
+                      {laiky[f.id] || 0}
+                    </span>
+                  </>
+                }
+              />
+              <RightOutlined style={{ color: "#bbb" }} />
+            </List.Item>
+          )}
+        />
+      );
+    }
+
+    if (vidkryty === "laiky") {
+      if (vsiLajky === 0) {
+        return (
+          <Empty description="Поки що лайків немає. Натисніть ♥ у каталозі!" />
+        );
+      }
+      return (
+        <div className="rejtyng-laikiv">
+          {filmyPosortovani.map((f, i) => (
+            <div key={f.id} className="rejtyng-ryadok">
+              <span className="rejtyng-misto">
+                {i === 0 ? "👑" : `${i + 1}.`}
+              </span>
+              <span className="rejtyng-nazva">{f.nazva}</span>
+              <div className="rejtyng-smuzhok">
+                <div
+                  className="rejtyng-zapovnennya"
+                  style={{
+                    width: `${(f.kilkistLaikiv / maksLaikiv) * 100}%`,
+                    background: FARBY[i % FARBY.length],
+                  }}
+                />
+              </div>
+              <span className="rejtyng-chyslo">
+                <HeartFilled style={{ color: "#ff6b81" }} />{" "}
+                {f.kilkistLaikiv}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (vidkryty === "vihtuky") {
+      if (vihtuky.length === 0) {
+        return (
+          <Empty
+            description={
+              <span>
+                Ще немає відгуків.{" "}
+                <Link to="/" onClick={() => setVidkryty(null)}>
+                  Залиште перший
+                </Link>
+                !
+              </span>
+            }
+          />
+        );
+      }
+      return (
+        <List
+          dataSource={vihtuky}
+          renderItem={(v) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={<Avatar style={{ background: "#667eea" }}>{v.imya[0]}</Avatar>}
+                title={
+                  <>
+                    {v.imya} <Rate disabled value={v.ocinka} />{" "}
+                    <span className="vihtuk-data">{v.data}</span>
+                  </>
+                }
+                description={v.tekst}
+              />
+            </List.Item>
+          )}
+        />
+      );
+    }
+
+    if (vidkryty === "ocinka") {
+      if (vihtuky.length === 0) {
+        return <Empty description="Немає оцінок — станьте першим!" />;
+      }
+      return (
+        <div className="rejtyng-laikiv">
+          <div className="serednya-velyka">
+            {serednyaOcinka} <span>/ 5</span>
+          </div>
+          {[5, 4, 3, 2, 1].map((o) => {
+            const kilkist = vihtuky.filter((v) => v.ocinka === o).length;
+            const chastka = (kilkist / vihtuky.length) * 100;
+            return (
+              <div key={o} className="rejtyng-ryadok">
+                <span className="rejtyng-misto">{o} ★</span>
+                <div className="rejtyng-smuzhok">
+                  <div
+                    className="rejtyng-zapovnennya"
+                    style={{
+                      width: `${chastka}%`,
+                      background: "#f6b93b",
+                    }}
+                  />
+                </div>
+                <span className="rejtyng-chyslo">{kilkist}</span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   // Таблиця фільмів
   const kolonky = [
@@ -150,37 +313,62 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
         </Link>
       </div>
 
-      {/* Статистика */}
+      {/* Статистика — натискаються! */}
       <Row gutter={[16, 16]} className="statystyka">
         <Col xs={12} md={6}>
-          <Card>
+          <Card
+            className="stat-kartka"
+            onClick={() => setVidkryty("filmy")}
+            hoverable
+          >
             <Statistic
               title="Фільмів"
               value={filmy.length}
               prefix={<VideoCameraOutlined />}
             />
+            <span className="stat-pidkazka">
+              Подивитись список <RightOutlined />
+            </span>
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card>
+          <Card
+            className="stat-kartka"
+            onClick={() => setVidkryty("laiky")}
+            hoverable
+          >
             <Statistic
               title="Лайків"
               value={vsiLajky}
               prefix={<HeartFilled style={{ color: "#ff6b81" }} />}
             />
+            <span className="stat-pidkazka">
+              Рейтинг фільмів <RightOutlined />
+            </span>
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card>
+          <Card
+            className="stat-kartka"
+            onClick={() => setVidkryty("vihtuky")}
+            hoverable
+          >
             <Statistic
               title="Відгуків"
               value={vihtuky.length}
               prefix={<MessageFilled style={{ color: "#764ba2" }} />}
             />
+            <span className="stat-pidkazka">
+              Читати відгуки <RightOutlined />
+            </span>
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card>
+          <Card
+            className="stat-kartka"
+            onClick={() => setVidkryty("ocinka")}
+            hoverable
+          >
             <Statistic
               title="Середня оцінка"
               value={serednyaOcinka}
@@ -188,9 +376,27 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
               suffix="/ 5"
               prefix={<StarFilled style={{ color: "#f6b93b" }} />}
             />
+            <span className="stat-pidkazka">
+              Розподіл оцінок <RightOutlined />
+            </span>
           </Card>
         </Col>
       </Row>
+
+      {/* Модалка зі деталями */}
+      <Modal
+        title={zagolovky[vidkryty]}
+        open={vidkryty !== null}
+        onCancel={() => setVidkryty(null)}
+        footer={
+          <Button type="primary" onClick={() => setVidkryty(null)}>
+            Закрити
+          </Button>
+        }
+        width={560}
+      >
+        {vmistModalky()}
+      </Modal>
 
       {/* Перелік фільмів */}
       <Card
