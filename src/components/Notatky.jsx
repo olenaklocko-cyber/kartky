@@ -1,4 +1,10 @@
 import { useState, useEffect } from "react";
+import { Button, Input, Popconfirm, Empty, Spin } from "antd";
+import {
+  LogoutOutlined,
+  CloudUploadOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import supabase from "../supabase";
 import "./Notatky.css";
 
@@ -8,14 +14,7 @@ function Notatky({ korystuvach, naVykhid }) {
   const [zavantazhennya, setZavantazhennya] = useState(true);
   const [nadtyska, setNadtyska] = useState(false);
 
-  // Завантаження ТІЛЬКИ своїх нотаток
-  useEffect(() => {
-    if (!korystuvach) return;
-    zavantatyNotatky();
-  }, [korystuvach]);
-
   const zavantatyNotatky = async () => {
-    setZavantazhennya(true);
     const { data, error } = await supabase
       .from("notatky")
       .select("*")
@@ -28,6 +27,12 @@ function Notatky({ korystuvach, naVykhid }) {
     }
     setZavantazhennya(false);
   };
+
+  // Завантаження ТІЛЬКИ своїх нотаток
+  useEffect(() => {
+    if (!korystuvach) return;
+    zavantatyNotatky();
+  }, [korystuvach]);
 
   // Додавання нотатки
   const dodatyNotatku = async (e) => {
@@ -62,31 +67,46 @@ function Notatky({ korystuvach, naVykhid }) {
           <h2>☁️ Мої нотатки</h2>
           <p className="pidzagolovok">Ваш email: {korystuvach.email}</p>
         </div>
-        <button className="knopka-vykhodu" onClick={naVykhid}>
-          🚪 Вийти
-        </button>
+        <Button
+          danger
+          icon={<LogoutOutlined />}
+          onClick={naVykhid}
+          size="large"
+        >
+          Вийти
+        </Button>
       </div>
 
       {/* Форма */}
       <form className="forma-notatky" onSubmit={dodatyNotatku}>
-        <textarea
+        <Input.TextArea
           placeholder="Напишіть нотатку..."
           value={tekst}
           onChange={(e) => setTekst(e.target.value)}
           rows={3}
+          maxLength={500}
+          showCount
         />
-        <button type="submit" disabled={nadtyska || !tekst.trim()}>
-          {nadtyska ? "Збереження..." : "☁️ Зберегти в хмару"}
-        </button>
+        <Button
+          type="primary"
+          htmlType="submit"
+          block
+          size="large"
+          loading={nadtyska}
+          disabled={!tekst.trim()}
+          icon={<CloudUploadOutlined />}
+        >
+          Зберегти в хмару
+        </Button>
       </form>
 
       {/* Список */}
       {zavantazhennya ? (
-        <div className="zavantazhennya-notatok">⏳ Завантаження...</div>
-      ) : notatky.length === 0 ? (
-        <div className="nemae-notatok">
-          Ще немає нотаток. Додайте першу! ✨
+        <div className="zavantazhennya-notatok">
+          <Spin size="large" />
         </div>
+      ) : notatky.length === 0 ? (
+        <Empty description="Ще немає нотаток. Додайте першу! ✨" />
       ) : (
         <div className="spysok-notatok">
           {notatky.map((n) => (
@@ -95,12 +115,19 @@ function Notatky({ korystuvach, naVykhid }) {
                 <span className="notatka-data">
                   {new Date(n.stvoreno).toLocaleDateString("uk-UA")}
                 </span>
-                <button
-                  className="notatka-vydaluty"
-                  onClick={() => vydaluty(n.id)}
+                <Popconfirm
+                  title="Видалити нотатку?"
+                  okText="Так"
+                  cancelText="Ні"
+                  onConfirm={() => vydaluty(n.id)}
                 >
-                  🗑️
-                </button>
+                  <Button
+                    type="text"
+                    danger
+                    size="small"
+                    icon={<DeleteOutlined />}
+                  />
+                </Popconfirm>
               </div>
               <p className="notatka-tekst">{n.tekst}</p>
             </div>

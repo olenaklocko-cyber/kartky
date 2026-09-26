@@ -4,33 +4,8 @@
   padding: 40px 20px;
 }
 
-.knopka-nazad {
-  display: inline-block;
+.podrobnosti > .ant-btn {
   margin-bottom: 24px;
-  padding: 10px 20px;
-  background: #667eea;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: 600;
-  transition: background 0.2s ease;
-}
-
-.knopka-nazad:hover {
-  background: #5a6fd6;
-}
-
-.stan {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 60px;
-}
-
-.pomylka-tekst {
-  font-size: 24px;
-  color: #888;
 }
 
 /* Картка фільму */
@@ -59,14 +34,8 @@
   padding: 32px;
 }
 
-.zhanr {
-  display: inline-block;
-  background: #f0f0f0;
-  color: #667eea;
+.zhanr-tag {
   font-size: 12px;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -85,36 +54,8 @@
 }
 
 /* Деталі */
-.detali {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.detali-tablycia {
   margin-bottom: 24px;
-}
-
-.detal {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #f8f9ff;
-  padding: 14px;
-  border-radius: 10px;
-}
-
-.detal-icon {
-  font-size: 24px;
-}
-
-.detal-nazva {
-  display: block;
-  font-size: 12px;
-  color: #888;
-  text-transform: uppercase;
-}
-
-.detal strong {
-  font-size: 16px;
-  color: #1a1a2e;
 }
 
 /* Кнопки дій */
@@ -122,28 +63,6 @@
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-}
-
-.knopka-diyi {
-  padding: 12px 20px;
-  border: 2px solid #e0e0e0;
-  background: #f5f5f5;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.knopka-diyi:hover {
-  border-color: #667eea;
-  transform: translateY(-2px);
-}
-
-.knopka-diyi.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  border: none;
 }
 
 /* Секція "Про фільм" */
@@ -174,9 +93,5 @@
 
   .zobrazhennya-filmu .emoji {
     font-size: 100px;
-  }
-
-  .detali {
-    grid-template-columns: 1fr;
   }
 }

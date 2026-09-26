@@ -1,0 +1,58 @@
+.dashbord {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.dashbord-shapka {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.dashbord-shapka h1 {
+  font-size: 32px;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.dashbord-shapka p {
+  color: #888;
+  font-size: 16px;
+}
+
+.statystyka {
+  margin-bottom: 16px;
+}
+
+.statystyka .ant-card {
+  height: 100%;
+}
+
+.grafik-kartka {
+  margin-bottom: 16px;
+}
+
+.grafik {
+  width: 100%;
+}
+
+.knopky-lajkiv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.pidkazka {
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .dashbord-shapka h1 {
+    font-size: 26px;
+  }
+}

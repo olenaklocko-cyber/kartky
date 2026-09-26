@@ -31,32 +31,9 @@
   font-size: 15px;
 }
 
-/* Режими */
+/* Перемикач режимів */
 .rezhymy {
-  display: flex;
-  background: #f0f0f5;
-  border-radius: 12px;
-  padding: 4px;
   margin-bottom: 24px;
-}
-
-.rezhym {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  background: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #888;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.rezhym.aktyvnyj {
-  background: #ffffff;
-  color: #1a1a2e;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Поля */
@@ -72,65 +49,9 @@
   font-size: 14px;
 }
 
-.pole input {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  outline: none;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
-}
-
-.pole input:focus {
-  border-color: #667eea;
-}
-
 /* Помилка */
 .pomylka {
-  background: #fff0f0;
-  color: #ff4757;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 14px;
   margin-bottom: 16px;
-}
-
-/* Кнопка */
-.knopka-golovna {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.knopka-golovna:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-
-.knopka-golovna:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.knopka {
-  padding: 12px 24px;
-  background: #667eea;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 16px;
 }
 
 /* Повідомлення */
@@ -152,4 +73,5 @@
 .povedinka p {
   color: #888;
   font-size: 15px;
+  margin-bottom: 8px;
 }

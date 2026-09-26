@@ -35,8 +35,15 @@
 }
 
 .zaholovok {
-  text-align: center;
   margin-bottom: 32px;
+}
+
+.zaholovok-verh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .zaholovok h1 {
@@ -61,46 +68,7 @@
 
 .poshuk {
   width: 100%;
-  padding: 14px 20px;
-  font-size: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  outline: none;
-  transition: border-color 0.3s ease;
   margin-bottom: 16px;
-}
-
-.poshuk:focus {
-  border-color: #667eea;
-}
-
-.filtry {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.filtr-btn {
-  padding: 8px 18px;
-  border: 2px solid #e0e0e0;
-  border-radius: 20px;
-  background: #f5f5f5;
-  color: #666;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.filtr-btn:hover {
-  border-color: #667eea;
-  color: #667eea;
-}
-
-.filtr-btn.aktyvnyj {
-  background: #667eea;
-  border-color: #667eea;
-  color: #ffffff;
 }
 
 .lichilnyk {

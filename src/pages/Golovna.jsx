@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Input, Button, Space } from "antd";
+import {
+  SearchOutlined,
+  BarChartOutlined,
+  MessageFilled,
+} from "@ant-design/icons";
 import supabase from "../supabase";
 import Kartka from "../components/Kartka";
 import FormaVihtuku from "../components/FormaVihtuku";
@@ -9,14 +15,14 @@ import Vhid from "../components/Vhid";
 import filmy from "../data/filmy";
 import "./Golovna.css";
 
-function Golovna() {
+function Golovna({ laiky, vihtuky, naLajk, dodatyVihtuk }) {
   const [korystuvach, setKorystuvach] = useState(null);
   const [zavantazhennya, setZavantazhennya] = useState(true);
 
   const [poshuk, setPoshuk] = useState("");
   const [aktyvnyjZhanr, setAktyvnyjZhanr] = useState("Усі");
-  const [laiky, setLaiky] = useState({});
-  const [vihtuky, setVihtuky] = useState([]);
+
+  const navigate = useNavigate();
 
   // Перевірка чи користувач увійшов
   useEffect(() => {
@@ -41,14 +47,6 @@ function Golovna() {
   };
 
   const zhanry = ["Усі", ...new Set(filmy.map((f) => f.zhanr))];
-
-  const naLajk = (id) => {
-    setLaiky((p) => ({ ...p, [id]: (p[id] || 0) + 1 }));
-  };
-
-  const dodatyVihtuk = (novyi) => {
-    setVihtuky((p) => [novyi, ...p]);
-  };
 
   const filtrivaniFilmy = filmy.filter((film) => {
     const spodobaetsya = film.nazva
@@ -75,32 +73,44 @@ function Golovna() {
   return (
     <div className="golovna">
       <header className="zaholovok">
-        <h1>🎬 Мій каталог фільмів</h1>
-        <p>Клікни на картку щоб побачити деталі фільму</p>
+        <div className="zaholovok-verh">
+          <div>
+            <h1>🎬 Мій каталог фільмів</h1>
+            <p>Клікни на картку щоб побачити деталі фільму</p>
+          </div>
+          <Button
+            type="primary"
+            size="large"
+            icon={<BarChartOutlined />}
+            onClick={() => navigate("/dashbord")}
+          >
+            Дашборд
+          </Button>
+        </div>
       </header>
 
       {/* Панель керування */}
       <div className="panel">
-        <input
-          type="text"
+        <Input
           className="poshuk"
-          placeholder="🔍 Пошук за назвою..."
+          size="large"
+          prefix={<SearchOutlined />}
+          allowClear
+          placeholder="Пошук за назвою..."
           value={poshuk}
           onChange={(e) => setPoshuk(e.target.value)}
         />
-        <div className="filtry">
+        <Space wrap>
           {zhanry.map((zhanr) => (
-            <button
+            <Button
               key={zhanr}
-              className={`filtr-btn ${
-                aktyvnyjZhanr === zhanr ? "aktyvnyj" : ""
-              }`}
+              type={aktyvnyjZhanr === zhanr ? "primary" : "default"}
               onClick={() => setAktyvnyjZhanr(zhanr)}
             >
               {zhanr}
-            </button>
+            </Button>
           ))}
-        </div>
+        </Space>
       </div>
 
       <p className="lichilnyk">
@@ -136,7 +146,9 @@ function Golovna() {
 
       {/* Відгуки */}
       <section className="sekciya-vihtukiv">
-        <h2 className="zagolovok-sekciyi">💬 Відгуки глядачів</h2>
+        <h2 className="zagolovok-sekciyi">
+          <MessageFilled style={{ color: "#764ba2" }} /> Відгуки глядачів
+        </h2>
         <FormaVihtuku naDodaty={dodatyVihtuk} />
         <div className="spysok-vihtukiv">
           {vihtuky.length === 0 ? (

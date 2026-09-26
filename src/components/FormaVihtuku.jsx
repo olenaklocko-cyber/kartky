@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Input, Button, Rate, Alert } from "antd";
+import { SendOutlined } from "@ant-design/icons";
 import "./FormaVihtuku.css";
 
 function FormaVihtuku({ naDodaty }) {
@@ -57,31 +59,26 @@ function FormaVihtuku({ naDodaty }) {
       {/* Ім'я */}
       <div className="pole">
         <label>Ваше ім'я</label>
-        <input
-          type="text"
+        <Input
+          size="large"
           value={imya}
           onChange={(e) => setImya(e.target.value)}
           placeholder="Наприклад, Олена"
-          className={pomylky.imya ? "pomylka" : ""}
+          status={pomylky.imya ? "error" : ""}
         />
-        {pomylky.imya && <span className="tekst-pomylky">{pomylky.imya}</span>}
+        {pomylky.imya && (
+          <span className="tekst-pomylky">{pomylky.imya}</span>
+        )}
       </div>
 
-      {/* Оцінка зірками */}
+      {/* Оцінка зірками — antd Rate */}
       <div className="pole">
         <label>Оцінка</label>
-        <div className="zirky">
-          {[1, 2, 3, 4, 5].map((zirka) => (
-            <button
-              key={zirka}
-              type="button"
-              className={`zirka ${zirka <= ocinka ? "aktyvna" : ""}`}
-              onClick={() => setOcinka(zirka)}
-            >
-              ⭐
-            </button>
-          ))}
-        </div>
+        <Rate
+          value={ocinka}
+          onChange={setOcinka}
+          style={{ fontSize: 32 }}
+        />
         {pomylky.ocinka && (
           <span className="tekst-pomylky">{pomylky.ocinka}</span>
         )}
@@ -90,20 +87,38 @@ function FormaVihtuku({ naDodaty }) {
       {/* Текст відгуку */}
       <div className="pole">
         <label>Ваш відгук</label>
-        <textarea
+        <Input.TextArea
           value={tekst}
           onChange={(e) => setTekst(e.target.value)}
           placeholder="Поділіться своїми враженнями..."
           rows={4}
-          className={pomylky.tekst ? "pomylka" : ""}
+          maxLength={500}
+          showCount
+          status={pomylky.tekst ? "error" : ""}
         />
-        {pomylky.tekst && <span className="tekst-pomylky">{pomylky.tekst}</span>}
-        <span className="lichilnyk-symvoliv">{tekst.length} / 500</span>
+        {pomylky.tekst && (
+          <span className="tekst-pomylky">{pomylky.tekst}</span>
+        )}
       </div>
 
-      <button type="submit" className="knopka-nadislaty">
+      {Object.keys(pomylky).length > 0 && (
+        <Alert
+          type="error"
+          showIcon
+          message="Виправте помилки у формі"
+          className="forma-pomylka"
+        />
+      )}
+
+      <Button
+        type="primary"
+        size="large"
+        htmlType="submit"
+        block
+        icon={<SendOutlined />}
+      >
         Надіслати відгук
-      </button>
+      </Button>
     </form>
   );
 }

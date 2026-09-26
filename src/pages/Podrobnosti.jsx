@@ -1,29 +1,49 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button, Tag, Descriptions, Result } from "antd";
+import {
+  ArrowLeftOutlined,
+  PlayCircleOutlined,
+  HeartOutlined,
+  ShareAltOutlined,
+} from "@ant-design/icons";
 import filmy from "../data/filmy";
 import "./Podrobnosti.css";
 
 function Podrobnosti() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const film = filmy.find((f) => f.id === Number(id));
 
   if (!film) {
     return (
       <div className="podrobnosti">
-        <div className="stan">
-          <p className="pomylka-tekst">😕 Фільм не знайдено</p>
-          <Link to="/" className="knopka-nazad">
-            ← Назад до списку
-          </Link>
-        </div>
+        <Result
+          status="404"
+          title="404"
+          subTitle="😕 Фільм не знайдено"
+          extra={
+            <Button
+              type="primary"
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate("/")}
+            >
+              Назад до списку
+            </Button>
+          }
+        />
       </div>
     );
   }
 
   return (
     <div className="podrobnosti">
-      <Link to="/" className="knopka-nazad">
-        ← Назад до списку
-      </Link>
+      <Button
+        icon={<ArrowLeftOutlined />}
+        size="large"
+        onClick={() => navigate("/")}
+      >
+        Назад до списку
+      </Button>
 
       <div className="kartka-filmu">
         {/* Зображення */}
@@ -33,47 +53,48 @@ function Podrobnosti() {
 
         {/* Інформація */}
         <div className="info-filmu">
-          <span className="zhanr">{film.zhanr}</span>
+          <Tag color="geekblue" className="zhanr-tag">
+            {film.zhanr}
+          </Tag>
           <h1>{film.nazva}</h1>
           <p className="opys">{film.opys}</p>
 
           {/* Деталі */}
-          <div className="detali">
-            <div className="detal">
-              <span className="detal-icon">📅</span>
-              <div>
-                <span className="detal-nazva">Рік випуску</span>
-                <strong>{film.rik || "2024"}</strong>
-              </div>
-            </div>
-            <div className="detal">
-              <span className="detal-icon">⭐</span>
-              <div>
-                <span className="detal-nazva">Рейтинг</span>
-                <strong>{film.rejtyng || "8.5"} / 10</strong>
-              </div>
-            </div>
-            <div className="detal">
-              <span className="detal-icon">🎬</span>
-              <div>
-                <span className="detal-nazva">Жанр</span>
-                <strong>{film.zhanr}</strong>
-              </div>
-            </div>
-            <div className="detal">
-              <span className="detal-icon">⏱️</span>
-              <div>
-                <span className="detal-nazva">Тривалість</span>
-                <strong>{film.trivalist || "120 хв"}</strong>
-              </div>
-            </div>
-          </div>
+          <Descriptions
+            column={2}
+            bordered
+            size="small"
+            className="detali-tablycia"
+          >
+            <Descriptions.Item label="📅 Рік">
+              {film.rik || "2024"}
+            </Descriptions.Item>
+            <Descriptions.Item label="⭐ Рейтинг">
+              {film.rejtyng || "8.5"} / 10
+            </Descriptions.Item>
+            <Descriptions.Item label="🎬 Жанр">
+              {film.zhanr}
+            </Descriptions.Item>
+            <Descriptions.Item label="⏱️ Тривалість">
+              {film.trivalist || "120 хв"}
+            </Descriptions.Item>
+          </Descriptions>
 
           {/* Кнопки дій */}
           <div className="diyi">
-            <button className="knopka-diyi primary">▶ Дивитись</button>
-            <button className="knopka-diyi">❤️ В обране</button>
-            <button className="knopka-diyi">📤 Поділитись</button>
+            <Button
+              type="primary"
+              size="large"
+              icon={<PlayCircleOutlined />}
+            >
+              Дивитись
+            </Button>
+            <Button size="large" icon={<HeartOutlined />}>
+              В обране
+            </Button>
+            <Button size="large" icon={<ShareAltOutlined />}>
+              Поділитись
+            </Button>
           </div>
         </div>
       </div>

@@ -1,4 +1,11 @@
 import { useState } from "react";
+import { Input, Button, Segmented, Alert } from "antd";
+import {
+  LockOutlined,
+  MailOutlined,
+  LoginOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
 import supabase from "../supabase";
 import "./Vhid.css";
 
@@ -54,41 +61,39 @@ function Vhid({ naAvthentyfikovano }) {
             <span className="ikona">📧</span>
             <h2>Перевірте пошту!</h2>
             <p>Ми надіслали вам лист для підтвердження email.</p>
-            <button
-              className="knopka"
+            <Button
+              type="primary"
+              size="large"
               onClick={() => {
                 setNadislano(false);
                 setRezhym("vhid");
               }}
             >
               Повернутись до входу
-            </button>
+            </Button>
           </div>
         ) : (
           <>
             {/* Перемикач режимів */}
-            <div className="rezhymy">
-              <button
-                className={`rezhym ${rezhym === "vhid" ? "aktyvnyj" : ""}`}
-                onClick={() => setRezhym("vhid")}
-              >
-                Увійти
-              </button>
-              <button
-                className={`rezhym ${
-                  rezhym === "reestraciya" ? "aktyvnyj" : ""
-                }`}
-                onClick={() => setRezhym("reestraciya")}
-              >
-                Реєстрація
-              </button>
-            </div>
+            <Segmented
+              block
+              value={rezhym}
+              onChange={setRezhym}
+              options={[
+                { label: "Увійти", value: "vhid" },
+                { label: "Реєстрація", value: "reestraciya" },
+              ]}
+              className="rezhymy"
+            />
 
             <form onSubmit={nadislaty}>
+              {/* Email */}
               <div className="pole">
                 <label>Email</label>
-                <input
+                <Input
+                  size="large"
                   type="email"
+                  prefix={<MailOutlined />}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
@@ -96,10 +101,12 @@ function Vhid({ naAvthentyfikovano }) {
                 />
               </div>
 
+              {/* Пароль */}
               <div className="pole">
                 <label>Пароль</label>
-                <input
-                  type="password"
+                <Input.Password
+                  size="large"
+                  prefix={<LockOutlined />}
                   value={parol}
                   onChange={(e) => setParol(e.target.value)}
                   placeholder="Мінімум 6 символів"
@@ -108,19 +115,27 @@ function Vhid({ naAvthentyfikovano }) {
                 />
               </div>
 
-              {pomylka && <div className="pomylka">{pomylka}</div>}
+              {pomylka && (
+                <Alert
+                  type="error"
+                  showIcon
+                  message={pomylka}
+                  className="pomylka"
+                />
+              )}
 
-              <button
-                type="submit"
-                className="knopka-golovna"
-                disabled={zavantazhennya}
+              <Button
+                type="primary"
+                size="large"
+                htmlType="submit"
+                block
+                loading={zavantazhennya}
+                icon={
+                  rezhym === "vhid" ? <LoginOutlined /> : <UserAddOutlined />
+                }
               >
-                {zavantazhennya
-                  ? "Зачекайте..."
-                  : rezhym === "vhid"
-                  ? "Увійти"
-                  : "Зареєструватися"}
-              </button>
+                {rezhym === "vhid" ? "Увійти" : "Зареєструватися"}
+              </Button>
             </form>
           </>
         )}
