@@ -4,6 +4,10 @@ export const poshuk = (nazva) =>
     `${nazva} дивитися онлайн`
   )}`;
 
+// Генератор унікальних id для нових фільмів (поза компонентом — чисто для лінтера)
+let lichylnykId = 1000;
+export const novyiId = () => ++lichylnykId;
+
 const filmy = [
   {
     id: 1,

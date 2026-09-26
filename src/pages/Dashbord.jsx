@@ -128,10 +128,7 @@ function Dashbord({ filmy, vydalutyFilm, laiky, vihtuky, naLajk }) {
                       title="Видалити фільм?"
                       okText="Так"
                       cancelText="Ні"
-                      onConfirm={(e) => {
-                        e.stopPropagation();
-                        vydalutyFilm(f.id);
-                      }}
+                      onConfirm={() => vydalutyFilm(f.id)}
                     >
                       <Button
                         type="text"

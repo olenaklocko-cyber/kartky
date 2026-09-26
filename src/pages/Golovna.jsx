@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Button, Space, Modal, message } from "antd";
+import { Input, Button, Space, Modal, message, Alert, Card } from "antd";
 import {
   SearchOutlined,
   BarChartOutlined,
   MessageFilled,
   PlusOutlined,
+  GlobalOutlined,
+  CloudDownloadOutlined,
 } from "@ant-design/icons";
 import supabase from "../supabase";
 import Kartka from "../components/Kartka";
@@ -13,7 +15,7 @@ import FormaVihtuku from "../components/FormaVihtuku";
 import Vihtuk from "../components/Vihtuk";
 import Notatky from "../components/Notatky";
 import Vhid from "../components/Vhid";
-import { poshuk as zbuduvatyPoshuk } from "../data/filmy";
+import { poshuk as zbuduvatyPoshuk, novyiId } from "../data/filmy";
 import "./Golovna.css";
 
 const { TextArea } = Input;
@@ -39,6 +41,12 @@ function Golovna({
   const [novyyOpys, setNovyyOpys] = useState("");
   const [novyyPoster, setNovyyPoster] = useState("");
   const [novyyVideo, setNovyyVideo] = useState("");
+
+  // Пошук фільмів в інтернеті (через Wikipedia)
+  const [internetPoshuk, setInternetPoshuk] = useState("");
+  const [internetRezultaty, setInternetRezultaty] = useState([]);
+  const [shukayut, setShukayut] = useState(false);
+  const [pomylka, setPomylka] = useState("");
 
   const navigate = useNavigate();
 
@@ -92,7 +100,7 @@ function Golovna({
       return;
     }
     dodatyFilm({
-      id: Date.now(),
+      id: novyiId(),
       obraz: "🎬",
       nazva,
       opys: novyyOpys.trim() || "Опис поки що відсутній.",
@@ -103,6 +111,71 @@ function Golovna({
     });
     message.success(`Фільм «${nazva}» додано до каталогу!`);
     zakrytyModalku();
+  };
+
+  // Пошук фільмів в інтернеті (Wikipedia — відкрите API, без ключів)
+  const shukatyVInterneti = async () => {
+    const zapyt = internetPoshuk.trim();
+    if (!zapyt) {
+      message.warning("Введіть назву для пошуку в інтернеті");
+      return;
+    }
+    setShukayut(true);
+    setPomylka("");
+    setInternetRezultaty([]);
+    try {
+      const shukaty = async (host, zapit) => {
+        const url =
+          `https://${host}/w/api.php?action=query&generator=search` +
+          `&gsrsearch=${encodeURIComponent(zapit)}` +
+          "&gsrlimit=6&prop=pageimages|extracts&piprop=thumbnail" +
+          "&pithumbsize=400&pilicense=any" +
+          "&exintro=1&explaintext=1&exsentences=2&format=json&origin=*";
+        const vidpovid = await fetch(url);
+        const dani = await vidpovid.json();
+        return dani?.query?.pages ? Object.values(dani.query.pages) : [];
+      };
+
+      // Послідовність спроб: англійська → англ. без «film» → українська
+      let storinky = await shukaty("en.wikipedia.org", `${zapyt} film`);
+      if (storinky.length === 0) {
+        storinky = await shukaty("en.wikipedia.org", zapyt);
+      }
+      if (storinky.length === 0) {
+        storinky = await shukaty("uk.wikipedia.org", zapyt);
+      }
+
+      setInternetRezultaty(
+        storinky.map((s) => ({
+          nazva: s.title.replace(/ \(.*\)$/, ""),
+          opys: s.extract || "Опис з Вікіпедії.",
+          poster: s.thumbnail?.source || "",
+        }))
+      );
+      if (storinky.length === 0) {
+        setPomylka("Нічого не знайдено. Спробуйте іншу назву.");
+      }
+    } catch {
+      setPomylka("Не вдалося з'єднатися з інтернетом. Спробуйте ще раз.");
+    } finally {
+      setShukayut(false);
+    }
+  };
+
+  // Додавання фільму з результатів інтернет-пошуку
+  const dodatyZInternetu = (rezultat) => {
+    dodatyFilm({
+      id: novyiId(),
+      obraz: "🎬",
+      nazva: rezultat.nazva,
+      opys: rezultat.opys,
+      zhanr: "Інше",
+      poster: rezultat.poster,
+      youtube: zbuduvatyPoshuk(rezultat.nazva),
+      dyvytysya: zbuduvatyPoshuk(rezultat.nazva),
+    });
+    message.success(`«${rezultat.nazva}» додано до каталогу!`);
+    setInternetRezultaty((p) => p.filter((r) => r.nazva !== rezultat.nazva));
   };
 
   if (zavantazhennya) {
@@ -174,6 +247,70 @@ function Golovna({
       <p className="lichilnyk">
         Знайдено: {filtrivaniFilmy.length} з {filmy.length}
       </p>
+
+      {/* 🔍 Розширений пошук в інтернеті */}
+      <div className="internet-poshuk">
+        <h2 className="zagolovok-sekciyi">
+          <GlobalOutlined style={{ color: "#667eea" }} /> Знайти фільм в
+          інтернеті
+        </h2>
+        <div className="internet-panel">
+          <Input
+            size="large"
+            prefix={<SearchOutlined />}
+            allowClear
+            placeholder="Введіть назву фільму для пошуку в інтернеті..."
+            value={internetPoshuk}
+            onChange={(e) => setInternetPoshuk(e.target.value)}
+            onPressEnter={shukatyVInterneti}
+          />
+          <Button
+            type="primary"
+            size="large"
+            icon={<CloudDownloadOutlined />}
+            loading={shukayut}
+            onClick={shukatyVInterneti}
+          >
+            Знайти в інтернеті
+          </Button>
+        </div>
+
+        {pomylka && <Alert type="warning" showIcon message={pomylka} />}
+
+        {internetRezultaty.length > 0 && (
+          <div className="internet-rezultaty">
+            {internetRezultaty.map((r) => (
+              <Card
+                key={r.nazva}
+                className="internet-kartka"
+                hoverable
+                cover={
+                  r.poster ? (
+                    <img
+                      className="internet-poster"
+                      src={r.poster}
+                      alt={r.nazva}
+                    />
+                  ) : (
+                    <div className="internet-poster-nema">🎬</div>
+                  )
+                }
+              >
+                <h3>{r.nazva}</h3>
+                <p className="internet-opys">{r.opys}</p>
+                <Button
+                  type="primary"
+                  block
+                  icon={<PlusOutlined />}
+                  onClick={() => dodatyZInternetu(r)}
+                >
+                  Додати до каталогу
+                </Button>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Сітка карток */}
       <main className="sitka">
