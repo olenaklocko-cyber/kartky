@@ -9,7 +9,6 @@ import {
   Empty,
   Tag,
   Alert,
-  Table,
   Modal,
   List,
   Avatar,
@@ -22,7 +21,6 @@ import {
   VideoCameraOutlined,
   StarFilled,
   BarChartOutlined,
-  PlayCircleOutlined,
   RightOutlined,
 } from "@ant-design/icons";
 import {
@@ -59,7 +57,6 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
   filmy.forEach((f) => {
     zhanryMap[f.zhanr] = (zhanryMap[f.zhanr] || 0) + 1;
   });
-  const zhanryData = Object.keys(zhanryMap);
   const daniZhanriv = Object.entries(zhanryMap).map(([nazva, kilkist]) => ({
     nazva,
     kilkist,
@@ -232,71 +229,6 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
     return null;
   };
 
-  // Таблиця фільмів
-  const kolonky = [
-    {
-      title: "",
-      dataIndex: "obraz",
-      key: "obraz",
-      width: 60,
-      render: (obraz, record) =>
-        record.poster ? (
-          <img className="tablycia-poster" src={record.poster} alt="" />
-        ) : (
-          <span className="tablycia-obraz">{obraz}</span>
-        ),
-    },
-    {
-      title: "Назва",
-      dataIndex: "nazva",
-      key: "nazva",
-      sorter: (a, b) => a.nazva.localeCompare(b.nazva, "uk"),
-    },
-    {
-      title: "Жанр",
-      dataIndex: "zhanr",
-      key: "zhanr",
-      filters: zhanryData.map((z) => ({ text: z, value: z })),
-      onFilter: (value, record) => record.zhanr === value,
-      render: (zhanr) => <Tag color="geekblue">{zhanr}</Tag>,
-    },
-    {
-      title: "Лайки",
-      key: "laiky",
-      width: 100,
-      sorter: (a, b) => a.laiky - b.laiky,
-      defaultSortOrder: "descend",
-      render: (_, record) => (
-        <span className="tablycia-lajky">
-          <HeartFilled style={{ color: "#ff6b81" }} /> {record.laiky}
-        </span>
-      ),
-    },
-    {
-      title: "",
-      key: "diya",
-      width: 110,
-      render: (_, record) => (
-        <Button
-          type="primary"
-          size="small"
-          icon={<PlayCircleOutlined />}
-          href={record.dyvytysya}
-          target="_blank"
-          rel="noreferrer"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Дивитись
-        </Button>
-      ),
-    },
-  ];
-
-  const daniTablyci = filmy.map((f) => ({
-    ...f,
-    laiky: laiky[f.id] || 0,
-  }));
-
   return (
     <div className="dashbord">
       <div className="dashbord-shapka">
@@ -397,28 +329,6 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
       >
         {vmistModalky()}
       </Modal>
-
-      {/* Перелік фільмів */}
-      <Card
-        className="grafik-kartka"
-        title={
-          <>
-            <VideoCameraOutlined style={{ color: "#667eea" }} /> Усі фільми (
-            {filmy.length}) — можна сортувати та фільтрувати
-          </>
-        }
-      >
-        <Table
-          columns={kolonky}
-          dataSource={daniTablyci}
-          rowKey="id"
-          pagination={false}
-          onRow={(record) => ({
-            onClick: () => navigate(`/film/${record.id}`),
-            style: { cursor: "pointer" },
-          })}
-        />
-      </Card>
 
       {/* Графік 1 — лайки за фільмами */}
       <Card
