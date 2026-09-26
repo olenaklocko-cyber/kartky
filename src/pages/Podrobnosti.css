@@ -26,6 +26,14 @@
   padding: 40px;
 }
 
+.poster-filmu {
+  width: 100%;
+  max-width: 340px;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  display: block;
+}
+
 .zobrazhennya-filmu .emoji {
   font-size: 150px;
 }

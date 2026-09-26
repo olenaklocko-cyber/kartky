@@ -55,6 +55,14 @@
   font-size: 24px;
 }
 
+.tablycia-poster {
+  width: 40px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
 .tablycia-lajky {
   font-weight: 600;
   color: #1a1a2e;

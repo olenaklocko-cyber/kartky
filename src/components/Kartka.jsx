@@ -2,12 +2,20 @@ import { Card, Button, Tag } from "antd";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import "./Kartka.css";
 
-function Kartka({ obraz, nazva, opys, zhanr, laiky, naLajk }) {
+function Kartka({ obraz, poster, nazva, opys, zhanr, laiky, naLajk }) {
   return (
     <Card
       className="kartka"
       hoverable
-      cover={<div className="kartka-obraz">{obraz}</div>}
+      cover={
+        <div className="kartka-obraz">
+          {poster ? (
+            <img className="kartka-poster" src={poster} alt={nazva} />
+          ) : (
+            obraz
+          )}
+        </div>
+      }
       actions={[
         <Tag key="zhanr" color="geekblue" className="kartka-zhanr-tag">
           {zhanr}

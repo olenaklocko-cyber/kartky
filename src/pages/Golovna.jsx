@@ -128,6 +128,7 @@ function Golovna({ laiky, vihtuky, naLajk, dodatyVihtuk }) {
             >
               <Kartka
                 obraz={film.obraz}
+                poster={film.poster}
                 nazva={film.nazva}
                 opys={film.opys}
                 zhanr={film.zhanr}

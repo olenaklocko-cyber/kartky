@@ -17,7 +17,7 @@ import {
   VideoCameraOutlined,
   StarFilled,
   BarChartOutlined,
-  EyeOutlined,
+  PlayCircleOutlined,
 } from "@ant-design/icons";
 import {
   BarChart,
@@ -76,7 +76,12 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
       dataIndex: "obraz",
       key: "obraz",
       width: 60,
-      render: (obraz) => <span className="tablycia-obraz">{obraz}</span>,
+      render: (obraz, record) =>
+        record.poster ? (
+          <img className="tablycia-poster" src={record.poster} alt="" />
+        ) : (
+          <span className="tablycia-obraz">{obraz}</span>
+        ),
     },
     {
       title: "Назва",
@@ -112,10 +117,13 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
         <Button
           type="primary"
           size="small"
-          icon={<EyeOutlined />}
-          onClick={() => navigate(`/film/${record.id}`)}
+          icon={<PlayCircleOutlined />}
+          href={record.youtube}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
         >
-          Деталі
+          Дивитись
         </Button>
       ),
     },

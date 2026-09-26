@@ -48,7 +48,15 @@ function Podrobnosti() {
       <div className="kartka-filmu">
         {/* Зображення */}
         <div className="zobrazhennya-filmu">
-          <span className="emoji">{film.obraz}</span>
+          {film.poster ? (
+            <img
+              className="poster-filmu"
+              src={film.poster}
+              alt={film.nazva}
+            />
+          ) : (
+            <span className="emoji">{film.obraz}</span>
+          )}
         </div>
 
         {/* Інформація */}
@@ -86,8 +94,11 @@ function Podrobnosti() {
               type="primary"
               size="large"
               icon={<PlayCircleOutlined />}
+              href={film.youtube}
+              target="_blank"
+              rel="noreferrer"
             >
-              Дивитись
+              Дивитись на YouTube
             </Button>
             <Button size="large" icon={<HeartOutlined />}>
               В обране
