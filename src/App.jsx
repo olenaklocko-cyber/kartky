@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import ukUA from "antd/locale/uk_UA";
 import Golovna from "./pages/Golovna";
@@ -41,7 +41,7 @@ function App() {
         },
       }}
     >
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           {/* Головна — каталог фільмів */}
           <Route
@@ -81,7 +81,7 @@ function App() {
             }
           />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </ConfigProvider>
   );
 }
