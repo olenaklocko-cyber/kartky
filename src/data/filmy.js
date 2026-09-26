@@ -1,3 +1,9 @@
+// Посилання на пошук фільму для онлайн-перегляду на YouTube
+const poshuk = (nazva) =>
+  `https://www.youtube.com/results?search_query=${encodeURIComponent(
+    `${nazva} дивитися онлайн`
+  )}`;
+
 const filmy = [
   {
     id: 1,
@@ -8,6 +14,7 @@ const filmy = [
     poster:
       "https://upload.wikimedia.org/wikipedia/en/b/bc/Interstellar_film_poster.jpg",
     youtube: "https://www.youtube.com/watch?v=zSWdZVtXT7E",
+    dyvytysya: poshuk("Інтерстеллар"),
   },
   {
     id: 2,
@@ -18,6 +25,7 @@ const filmy = [
     poster:
       "https://upload.wikimedia.org/wikipedia/en/d/d8/Game_of_Thrones_title_card.jpg",
     youtube: "https://www.youtube.com/watch?v=rlR4PJn8b8I",
+    dyvytysya: poshuk("Гра престолів"),
   },
   {
     id: 3,
@@ -28,6 +36,7 @@ const filmy = [
     poster:
       "https://upload.wikimedia.org/wikipedia/en/c/cd/The_Martian_film_poster.jpg",
     youtube: "https://www.youtube.com/watch?v=ej3ioOneTy8",
+    dyvytysya: poshuk("Марсіанин"),
   },
   {
     id: 4,
@@ -38,6 +47,7 @@ const filmy = [
     poster:
       "https://upload.wikimedia.org/wikipedia/en/1/1c/The_Dark_Knight_%282008_film%29.jpg",
     youtube: "https://www.youtube.com/watch?v=_PZpmTj1Q8Q",
+    dyvytysya: poshuk("Темний лицар"),
   },
   {
     id: 5,
@@ -48,6 +58,7 @@ const filmy = [
     poster:
       "https://upload.wikimedia.org/wikipedia/en/1/18/Titanic_%281997_film%29_poster.png",
     youtube: "https://www.youtube.com/watch?v=CHekzSiZjrY",
+    dyvytysya: poshuk("Титанік"),
   },
   {
     id: 6,
@@ -58,6 +69,7 @@ const filmy = [
     poster:
       "https://upload.wikimedia.org/wikipedia/en/3/3d/The_Lion_King_poster.jpg",
     youtube: "https://www.youtube.com/watch?v=lFzVJEksoDY",
+    dyvytysya: poshuk("Король Лев"),
   },
 ];
 

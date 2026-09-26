@@ -5,6 +5,7 @@ import {
   PlayCircleOutlined,
   HeartOutlined,
   ShareAltOutlined,
+  VideoCameraOutlined,
 } from "@ant-design/icons";
 import filmy from "../data/filmy";
 import "./Podrobnosti.css";
@@ -94,11 +95,20 @@ function Podrobnosti() {
               type="primary"
               size="large"
               icon={<PlayCircleOutlined />}
+              href={film.dyvytysya}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Дивитись онлайн
+            </Button>
+            <Button
+              size="large"
+              icon={<VideoCameraOutlined />}
               href={film.youtube}
               target="_blank"
               rel="noreferrer"
             >
-              Дивитись на YouTube
+              Трейлер
             </Button>
             <Button size="large" icon={<HeartOutlined />}>
               В обране

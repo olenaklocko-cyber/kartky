@@ -118,7 +118,7 @@ function Dashbord({ laiky, vihtuky, naLajk }) {
           type="primary"
           size="small"
           icon={<PlayCircleOutlined />}
-          href={record.youtube}
+          href={record.dyvytysya}
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
